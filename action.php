@@ -35,6 +35,24 @@ class action_plugin_redirect extends DokuWiki_Action_Plugin {
         if($ACT != 'show') return;
 
         $redirects = confToHash(dirname(__FILE__).'/redirect.conf');
+        
+         $newID = "";
+
+         foreach ( $redirects as $mask=>$target )
+         {
+               $regex_mask = '/^'.preg_replace( '/\*/', '(.*)', $mask ).'$/';
+
+               if ( preg_match( $regex_mask, $ID ) )
+              {
+                      $newID = preg_replace( $regex_mask, $target, $ID );
+                       break;
+               }
+         }
+
+         $redirects[$ID] = $newID;
+        
+        
+        
         if($redirects[$ID]){
             if(preg_match('/^https?:\/\//',$redirects[$ID])){
                 send_redirect($redirects[$ID]);
